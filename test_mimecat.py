@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import unittest
+from StringIO import StringIO
 
 from mimecat import Catalogue, _canonicalize_extension, _parse_line
 
@@ -62,6 +63,9 @@ class CatalogueTests(unittest.TestCase):
     def setUp(self):
         self.catalogue = Catalogue(self.test_filename)
 
+        self.empty_catalogue = Catalogue(self.test_filename)
+        self.empty_catalogue.clear()
+
     def test_init(self):
         cat = Catalogue(self.test_filename)
         self.assertIsNotNone(cat)
@@ -81,49 +85,47 @@ class CatalogueTests(unittest.TestCase):
         self.assertEqual(set(), self.catalogue._known_extensions)
 
     def test_load_filenames_stops(self):
-        cat = Catalogue(self.test_filename)
-        cat.clear()
-        cat.load_filenames([self.test_filename_shibboleth, self.test_filename],
-                           True)
+        self.empty_catalogue.load_filenames([self.test_filename_shibboleth,
+                                       self.test_filename],
+                                      True)
 
-        self.assertEqual(len(cat._known_mediatypes), 1)
-        self.assertEqual(len(cat._known_mimetypes), 1)
-        self.assertEqual(len(cat._known_extensions), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mediatypes), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 1)
+        self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
 
     def test_load_filenames_does_not_stop(self):
-        cat = Catalogue(self.test_filename)
-        cat.clear()
-        cat.load_filenames([self.test_filename_shibboleth, self.test_filename],
-                           False)
+        self.empty_catalogue.load_filenames([self.test_filename_shibboleth,
+                                       self.test_filename], False)
 
-        self.assertGreater(len(cat._known_mediatypes), 1)
-        self.assertGreater(len(cat._known_mimetypes), 1)
-        self.assertGreater(len(cat._known_extensions), 1)
+        self.assertGreater(len(self.empty_catalogue._known_mediatypes), 1)
+        self.assertGreater(len(self.empty_catalogue._known_mimetypes), 1)
+        self.assertGreater(len(self.empty_catalogue._known_extensions), 1)
 
     def test_load_filenames_fail(self):
         with self.assertRaises(IOError):
-            self.catalogue.load_filenames(["BOGUS_FILE", "BOGUS_FILE2"])
+            self.empty_catalogue.load_filenames(["BOGUS_FILE", "BOGUS_FILE2"])
 
     def test_load_filename(self):
-        cat = Catalogue(self.test_filename_shibboleth)
-        self.assertEqual(len(cat._known_mediatypes), 1)
-        self.assertEqual(len(cat._known_mimetypes), 1)
-        self.assertEqual(len(cat._known_extensions), 1)
+        self.empty_catalogue.load_filename(self.test_filename_shibboleth)
+        self.assertEqual(len(self.empty_catalogue._known_mediatypes), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 1)
+        self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
 
     def test_load_filename_fails(self):
         with self.assertRaises(IOError):
-            self.catalogue.load_filename("BOGUS_FILE")
+            self.empty_catalogue.load_filename("BOGUS_FILE")
 
     def test_load_file(self):
-        cat = Catalogue(self.test_filename)
-        cat.clear()
-
         with open(self.test_filename_shibboleth) as filep:
-            cat.load_file(filep)
+            self.empty_catalogue.load_file(filep)
 
-        self.assertEqual(len(cat._known_mediatypes), 1)
-        self.assertEqual(len(cat._known_mimetypes), 1)
-        self.assertEqual(len(cat._known_extensions), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mediatypes), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 1)
+        self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
+
+    def test_parse_file(self):
+        pass
+
 
     def test_parse_line(self):
         result = _parse_line("#")
@@ -170,42 +172,35 @@ class CatalogueTests(unittest.TestCase):
         pass
 
     def test_add_type(self):
-        cat = Catalogue(self.test_filename)
+        self.empty_catalogue.add_type("text/plain", "txt")
+        self.assertIn("text", self.empty_catalogue._known_mediatypes)
+        self.assertIn("text/plain", self.empty_catalogue._known_mimetypes)
+        self.assertIn(".txt", self.empty_catalogue._known_extensions)
 
-        cat.clear()
-        cat.add_type("text/plain", "txt")
-        self.assertIn("text", cat._known_mediatypes)
-        self.assertIn("text/plain", cat._known_mimetypes)
-        self.assertIn(".txt", cat._known_extensions)
+        self.empty_catalogue.clear()
+        self.empty_catalogue.add_type("text/plain", ".txt")
+        self.assertIn("text", self.empty_catalogue._known_mediatypes)
+        self.assertIn("text/plain", self.empty_catalogue._known_mimetypes)
+        self.assertIn(".txt", self.empty_catalogue._known_extensions)
 
-        cat.clear()
-        cat.add_type("text/plain", ".txt")
-        self.assertIn("text", cat._known_mediatypes)
-        self.assertIn("text/plain", cat._known_mimetypes)
-        self.assertIn(".txt", cat._known_extensions)
-
-        cat.clear()
-        cat.add_type("text/plain", [".txt"])
-        self.assertIn("text", cat._known_mediatypes)
-        self.assertIn("text/plain", cat._known_mimetypes)
-        self.assertIn(".txt", cat._known_extensions)
+        self.empty_catalogue.clear()
+        self.empty_catalogue.add_type("text/plain", [".txt"])
+        self.assertIn("text", self.empty_catalogue._known_mediatypes)
+        self.assertIn("text/plain", self.empty_catalogue._known_mimetypes)
+        self.assertIn(".txt", self.empty_catalogue._known_extensions)
 
     def test_add_types_with_duplicate_extensions(self):
-        cat = Catalogue(self.test_filename)
+        self.empty_catalogue.add_type("text/plain", "txt")
+        self.empty_catalogue.add_type("text/doc", "txt")
+        self.assertIn("text/plain", self.empty_catalogue._exts_to_types[".txt"])
+        self.assertIn("text/doc", self.empty_catalogue._exts_to_types[".txt"])
 
-        cat.clear()
-        cat.add_type("text/plain", "txt")
-        cat.add_type("text/doc", "txt")
-        self.assertIn("text/plain", cat._exts_to_types[".txt"])
-        self.assertIn("text/doc", cat._exts_to_types[".txt"])
-
-        self.assertIn(".txt", cat._types_to_exts["text/plain"])
-        self.assertIn(".txt", cat._types_to_exts["text/doc"])
+        self.assertIn(".txt", self.empty_catalogue._types_to_exts["text/plain"])
+        self.assertIn(".txt", self.empty_catalogue._types_to_exts["text/doc"])
 
     def test_add_type_fails(self):
-        cat = Catalogue(self.test_filename)
         with self.assertRaises(ValueError):
-            cat.add_type("textplain", ".txt")
+            self.empty_catalogue.add_type("textplain", ".txt")
 
     def test_canonicalize_extension(self):
         ret = _canonicalize_extension("test")
