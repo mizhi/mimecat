@@ -230,7 +230,7 @@ def _parse_line(line):
 
     extensions = []
     if len(parts) > 1:
-        extensions = map(_canonicalize_extension, parts[1:])
+        extensions = [_canonicalize_extension(ext) for ext in parts[1:]]
 
     return (mimetype, extensions)
 
