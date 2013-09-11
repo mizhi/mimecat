@@ -33,3 +33,16 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+
+# ignore shinx build files
+_build/
+
+# anything involving setuptools
+dist/
+*.egg-info
+
+.vagrant/
+
+[#]*[#]
+[.][#]*
