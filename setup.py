@@ -6,6 +6,7 @@ setup(name="mimecat",
       author="Mitchell Peabody",
       description=("A simple module for handling a catalogue of MIME types and"
                    " extensions"),
+      url = "https://github.com/mizhi/mimecat",
       license="MIT",
       keywords="MIME types extensions",
       py_modules=["mimecat"],

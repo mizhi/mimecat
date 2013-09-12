@@ -36,9 +36,9 @@ Using `mimecat` is straightforward:
 >>> cat = Catalogue() # this will search in a number of common locations for a
                       # mime.types file. Loading will stop on first successful
                       # load.
->>> "text" in cat.known_mediatypes # Media types are the major part of a
-                                         # MIME type,
-                                         # (see http://www.ietf.org/rfc/rfc2046.txt)
+>>> "text" in cat.known_mediatypes # Media types are the first part of a
+                                   # MIME type,
+                                   # (see http://www.ietf.org/rfc/rfc2046.txt)
 True
 
 >>> "garbage" in cat.known_mediatypes
@@ -56,8 +56,8 @@ True
 >>> cat.get_types(".txt")
 ['text/plain']
 
->>> cat.get_extensions("text/garbage")
-Traceback (most recent call last):
+>>> cat.get_extensions("text/garbage") # KeyError is raised for unknown types.
+Traceback (most recent call last):     # This is also the case for get_types(...)
   File "<stdin>", line 1, in <module>
   File "mimecat.py", line 150, in get_extensions
     return self._types_to_exts[typename]
@@ -82,3 +82,12 @@ True
 >>> cat.get_types(".special_text")
 ['text/not-so-plain', 'text/not-so-plain2']
 ```
+
+Caveats
+=======
+
+One caveat really. `mimecat` currently has no support for obtaining MIME type
+information from the Windows registry. I don't dispute the utility of having
+this support, but I currently lack both the business need and the Windows setup
+for testing. If anyone wants to take a crack at coding this up and sending me a
+pull request on [github](https://github.com/mizhi/mimecat), go for it.
