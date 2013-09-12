@@ -3,4 +3,16 @@ from setuptools import setup
 
 setup(name="mimecat",
       version="0.1.0",
-      py_modules=["mimecat",])
+      author="Mitchell Peabody",
+      description=("A simple module for handling a catalogue of MIME types and"
+                   " extensions"),
+      license="MIT",
+      keywords="MIME types extensions",
+      py_modules=["mimecat"],
+      classifiers = [
+          "Development Status :: 3 - Alpha",
+          "License :: OSI Approved :: MIT License",
+          "Topic :: Internet",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Software Development"
+      ])
