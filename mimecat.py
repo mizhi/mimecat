@@ -44,7 +44,7 @@ class Catalogue(object):
         :param filenames: a filename or a list of filenames
           containing MIMEtype definitions in the style of mime.types
 
-        :raises IOError: If unable to find any of the files.
+        :raises: IOError If unable to find any of the files.
 
         """
         self._types_to_exts = None
@@ -81,7 +81,7 @@ class Catalogue(object):
 
         :param stop_on_successful_load: If False, then load all the files.
 
-        :raises IOError: If None of the listed files can be loaded.
+        :raises: IOError If None of the listed files can be loaded.
 
         """
         successful_load = False
@@ -144,7 +144,7 @@ class Catalogue(object):
 
         :param typename: String of the MIME type.
         :returns: List of known extensions. These will include a leading .
-        :raises KeyError: If MIME type is unknown.
+        :raises: KeyError If MIME type is unknown.
 
         """
         return self._types_to_exts[typename]
@@ -157,14 +157,14 @@ class Catalogue(object):
         :param extension: String of the extension. This can include the
           leading . or omit it.
         :returns: List of known MIME types that use the given extension.
-        :raises KeyError: If the extension is unknown.
+        :raises: KeyError If the extension is unknown.
 
         """
         return self._exts_to_types[_canonicalize_extension(extension)]
 
     def add_type(self, typename, extensions):
         """Adds a new entry for ``typename`` for the given list of
-        ``extensions`` If ``typename`` is already registered, then
+        ``extensions.`` If ``typename`` is already registered, then
         appends list of extensions to existing entry.
 
         :param typename: The MIME type to add.
@@ -172,7 +172,7 @@ class Catalogue(object):
         :param extensions: String of extension or list of extensions to
           add. This can include the leading . or omit it.
 
-        :raises ValueError: If ``typename`` is not of the format type/subtype
+        :raises: ValueError If ``typename`` is not of the format type/subtype
 
         """
         (mediatype, _) = typename.split("/")
@@ -220,7 +220,7 @@ def _parse_line(line):
     :param line: The line to parse.
     :returns: Tuple with mimetype and a list of extensions. If line is blank,
       return None
-    :raises ValueError: If mimetype is invalid (not type/subtype)
+    :raises: ValueError If mimetype is invalid (not type/subtype)
     """
     if "#" in line:
         line = line[:line.find("#")]
