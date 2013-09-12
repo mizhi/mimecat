@@ -33,31 +33,52 @@ Using `mimecat` is straightforward:
 ```python
 
 >>> from mimecat import Catalogue
->>> cat = Catalogue()
->>> print "text" in cat.known_mediatypes
+>>> cat = Catalogue() # this will search in a number of common locations for a
+                      # mime.types file. Loading will stop on first successful
+                      # load.
+>>> "text" in cat.known_mediatypes # Media types are the major part of a
+                                         # MIME type,
+                                         # (see http://www.ietf.org/rfc/rfc2046.txt)
 True
 
+>>> "garbage" in cat.known_mediatypes
+False
 
-from mimecat import Catalogue
+>>> "text/plain" in cat.known_mimetypes
+True
 
-cat = Catalogue() # this will search in a number of common locations for a
-                  # mime.types file. Loading will stop on first successful
-                  # load.
+>>> cat.get_extensions("text/plain")
+['.txt', '.text', '.conf', '.def', '.list', '.log', '.in']
 
-# Media types are the major part of a MIME type,
-# (see http://www.ietf.org/rfc/rfc2046.txt)
-print "text" in cat.known_mediatypes
->> True
+>>> cat.get_types("txt")
+['text/plain']
 
-print "garbage" in cat.known_mediatypes
->> False
+>>> cat.get_types(".txt")
+['text/plain']
 
-print "text/plain" in cat.known_mimetypes
->> True
+>>> cat.get_extensions("text/garbage")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "mimecat.py", line 150, in get_extensions
+    return self._types_to_exts[typename]
+KeyError: 'text/garbage'
+
+>>> cat = Catalogue("/path/to/mime.types") # Catalogues can be intialized with
+                                           # a custom mime.types file
 
 
-print cat.get_extensions("text/plain")
->>
 
+>>> cat = Catalogue(["/path/to/mime.types",             # A list of filenames
+                     "/path/to/additional/mime.types"]) # can also be supplied.
+                                                        # This will cause Catalogue
+                                                        # to load all of them.
 
+>>> cat.add_type("text/not-so-plain", [".special_text"]) # Add custom types
+>>> "text/not-so-plain" in cat.known_mimetypes
+True
+>>> cat.get_types(".special_text")
+['text/not-so-plain']
+>>> cat.add_type("text/not-so-plain2", [".special_text"]) # types can share extensions
+>>> cat.get_types(".special_text")
+['text/not-so-plain', 'text/not-so-plain2']
 ```
