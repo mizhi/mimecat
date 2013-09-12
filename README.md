@@ -28,18 +28,36 @@ extensions, and allow inspection of their associations.
 Usage
 =====
 
-Using `mimecat` is straightforward.
+Using `mimecat` is straightforward:
 
 ```python
+
+>>> from mimecat import Catalogue
+>>> cat = Catalogue()
+>>> print "text" in cat.known_mediatypes
+True
+
+
 from mimecat import Catalogue
 
 cat = Catalogue() # this will search in a number of common locations for a
                   # mime.types file. Loading will stop on first successful
                   # load.
 
-# Media types are the major part of a MIME type, (see [RFC2046](http://www.ietf.org/rfc/rfc2046.txt))
+# Media types are the major part of a MIME type,
+# (see http://www.ietf.org/rfc/rfc2046.txt)
 print "text" in cat.known_mediatypes
+>> True
 
+print "garbage" in cat.known_mediatypes
+>> False
+
+print "text/plain" in cat.known_mimetypes
+>> True
+
+
+print cat.get_extensions("text/plain")
+>>
 
 
 ```
