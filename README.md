@@ -20,7 +20,7 @@ associated with one type. I had a need to know all potential types, so I created
 There are also other issues with `mimetypes`, but I don't want to bag on
 it. [Other](https://mail.python.org/pipermail/python-dev/2009-July/090928.html)
 [people](http://lucumr.pocoo.org/2009/3/1/the-1000-speedup-or-the-stdlib-sucks/),
-more talented than me, have done that already.
+more talented than I, have done that already.
 
 My goals for `mimecat` are to keep track of MIME types, their associated
 extensions, and allow inspection of their associations.
