@@ -160,26 +160,41 @@ class CatalogueTests(unittest.TestCase):
             _ = _parse_line("invalid exts")
 
     def test_known_mediatypes(self):
-        pass
+        self.assertIn("application", self.catalogue.known_mediatypes)
+        self.assertIn("text", self.catalogue.known_mediatypes)
 
     def test_known_mimetypes(self):
-        pass
+        self.assertIn("application/json", self.catalogue.known_mimetypes)
+        self.assertIn("audio/mp4", self.catalogue.known_mimetypes)
 
     def test_known_extensions(self):
-        pass
+        self.assertIn(".ez", self.catalogue.known_extensions)
+        self.assertIn(".m4a", self.catalogue.known_extensions)
 
     def test_get_extensions(self):
-        pass
+        exts = self.catalogue.get_extensions("audio/midi")
+        self.assertEqual(len(exts), 4)
 
     def test_get_extensions_fails(self):
-        with self.assertRaises(ValueError):
-
+        with self.assertRaises(KeyError):
+            self.catalogue.get_extensions("bad/type")
 
     def test_get_types(self):
-        pass
+        types = self.catalogue.get_types(".txt")
+        self.assertEqual(len(types), 1)
+
+        types = self.catalogue.get_types("txt")
+        self.assertEqual(len(types), 1)
+
+    def test_get_types_with_duplicate(self):
+        self.catalogue.add_type("text/plain2", ".txt")
+        types = self.catalogue.get_types("txt")
+        self.assertIn("text/plain", types)
+        self.assertIn("text/plain2", types)
 
     def test_get_types_fails(self):
-        pass
+        with self.assertRaises(KeyError):
+            self.catalogue.get_types("asdf")
 
     def test_add_type(self):
         self.empty_catalogue.add_type("text/plain", "txt")

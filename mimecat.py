@@ -160,7 +160,7 @@ class Catalogue(object):
         :raises KeyError: If the extension is unknown.
 
         """
-        return self._exts_to_types[extension]
+        return self._exts_to_types[_canonicalize_extension(extension)]
 
     def add_type(self, typename, extensions):
         """Adds a new entry for ``typename`` for the given list of
