@@ -3,7 +3,8 @@ import os
 import unittest
 from StringIO import StringIO
 
-from mimecat import Catalogue, _canonicalize_extension, _parse_line
+from mimecat import (Catalogue, _canonicalize_extension,
+                     _parse_file, _parse_line)
 
 TEST_MIME_TYPES = """
 # This file maps Internet media types to unique file extension(s).
@@ -124,8 +125,13 @@ class CatalogueTests(unittest.TestCase):
         self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
 
     def test_parse_file(self):
-        pass
+        with open(self.test_filename_shibboleth) as filep:
+            items = [item for item in _parse_file(filep) if item is not None]
+        self.assertEqual(len(items), 1)
 
+        with open(self.test_filename) as filep:
+            items = [item for item in _parse_file(filep) if item is not None]
+        self.assertEqual(len(items), 13)
 
     def test_parse_line(self):
         result = _parse_line("#")
@@ -153,6 +159,9 @@ class CatalogueTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             _ = _parse_line("invalid exts")
 
+    def test_known_mediatypes(self):
+        pass
+
     def test_known_mimetypes(self):
         pass
 
@@ -163,7 +172,8 @@ class CatalogueTests(unittest.TestCase):
         pass
 
     def test_get_extensions_fails(self):
-        pass
+        with self.assertRaises(ValueError):
+
 
     def test_get_types(self):
         pass

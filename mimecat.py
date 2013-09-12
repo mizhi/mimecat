@@ -47,6 +47,12 @@ class Catalogue(object):
         :raises IOError: If unable to find any of the files.
 
         """
+        self._types_to_exts = None
+        self._exts_to_types = None
+        self._known_mediatypes = None
+        self._known_mimetypes = None
+        self._known_extensions = None
+
         self.clear()
 
         if filenames is None:
