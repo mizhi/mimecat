@@ -25,6 +25,32 @@ more talented than me, have done that already.
 My goals for `mimecat` are to keep track of MIME types, their associated
 extensions, and allow inspection of their associations.
 
+This module can be found at the [Python Package
+Index](https://pypi.python.org/pypi/mimecat).
+
+Installation
+============
+
+The easiest way to install is:
+
+```shell
+$ sudo pip install mimecat
+```
+
+If you want to install as part of a virtualenv:
+```shell
+(venv)$ pip install mimecat
+```
+
+If you want to install from the source tarball, download the source at the
+[Python Package Index](https://pypi.python.org/pypi/mimecat) and execute:
+
+```shell
+$ sudo pip install mimecat-<version>.tar.gz
+```
+
+
+
 Usage
 =====
 
