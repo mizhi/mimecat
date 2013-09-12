@@ -30,10 +30,16 @@ Usage
 
 Using `mimecat` is straightforward.
 
-```
+```python
 from mimecat import Catalogue
 
 cat = Catalogue() # this will search in a number of common locations for a
-                  # mime.types file.
+                  # mime.types file. Loading will stop on first successful
+                  # load.
+
+# Media types are the major part of a MIME type, (see [RFC2046](http://www.ietf.org/rfc/rfc2046.txt))
+print "text" in cat.known_mediatypes
+
+
 
 ```
