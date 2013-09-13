@@ -1,0 +1,4 @@
+2013-09-13  Mitchell Peabody  <mitchell.peabody@qrclab.com>
+
+        * mimecat.py (__init__): Added filep parameter to allow for open
+          files to be passed to __init__
