@@ -54,7 +54,8 @@ class CatalogueTests(unittest.TestCase):
             filep.write(TEST_MIME_TYPES)
 
         with open(cls.test_filename_shibboleth, "w") as filep:
-            filep.write("shibboleth/plain            shib")
+            filep.write("text/plain2            txt\n")
+            filep.write("text/plain            txt2\n")
 
     @classmethod
     def tearDownClass(cls):
@@ -69,7 +70,25 @@ class CatalogueTests(unittest.TestCase):
 
     def test_init(self):
         cat = Catalogue(self.test_filename)
-        self.assertIsNotNone(cat)
+        self.assertIn("message/rfc822",
+                      cat._known_mimetypes)
+
+    def test_init_with_filep(self):
+        with open(self.test_filename, "r") as filep:
+            cat = Catalogue(filep = filep)
+        self.assertIn("message/rfc822",
+                      cat._known_mimetypes)
+
+    def test_init_with_order(self):
+        with open(self.test_filename, "r") as filep:
+            cat = Catalogue(self.test_filename_shibboleth, filep)
+
+        # test_filename should've been used first, so text/plain2 should
+        # come after text/plain in the extensions to type map
+        type_list = cat._exts_to_types[".txt"]
+        self.assertGreater(type_list.index("text/plain2"),
+                           type_list.index("text/plain"))
+
 
     def test_init_fails(self):
         cat = None
@@ -87,20 +106,20 @@ class CatalogueTests(unittest.TestCase):
 
     def test_load_filenames_stops(self):
         self.empty_catalogue.load_filenames([self.test_filename_shibboleth,
-                                       self.test_filename],
-                                      True)
+                                             self.test_filename],
+                                            True)
 
         self.assertEqual(len(self.empty_catalogue._known_mediatypes), 1)
-        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 1)
-        self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 2)
+        self.assertEqual(len(self.empty_catalogue._known_extensions), 2)
 
     def test_load_filenames_does_not_stop(self):
         self.empty_catalogue.load_filenames([self.test_filename_shibboleth,
-                                       self.test_filename], False)
+                                             self.test_filename], False)
 
         self.assertGreater(len(self.empty_catalogue._known_mediatypes), 1)
-        self.assertGreater(len(self.empty_catalogue._known_mimetypes), 1)
-        self.assertGreater(len(self.empty_catalogue._known_extensions), 1)
+        self.assertGreater(len(self.empty_catalogue._known_mimetypes), 2)
+        self.assertGreater(len(self.empty_catalogue._known_extensions), 2)
 
     def test_load_filenames_fail(self):
         with self.assertRaises(IOError):
@@ -109,8 +128,8 @@ class CatalogueTests(unittest.TestCase):
     def test_load_filename(self):
         self.empty_catalogue.load_filename(self.test_filename_shibboleth)
         self.assertEqual(len(self.empty_catalogue._known_mediatypes), 1)
-        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 1)
-        self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 2)
+        self.assertEqual(len(self.empty_catalogue._known_extensions), 2)
 
     def test_load_filename_fails(self):
         with self.assertRaises(IOError):
@@ -121,13 +140,13 @@ class CatalogueTests(unittest.TestCase):
             self.empty_catalogue.load_file(filep)
 
         self.assertEqual(len(self.empty_catalogue._known_mediatypes), 1)
-        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 1)
-        self.assertEqual(len(self.empty_catalogue._known_extensions), 1)
+        self.assertEqual(len(self.empty_catalogue._known_mimetypes), 2)
+        self.assertEqual(len(self.empty_catalogue._known_extensions), 2)
 
     def test_parse_file(self):
         with open(self.test_filename_shibboleth) as filep:
             items = [item for item in _parse_file(filep) if item is not None]
-        self.assertEqual(len(items), 1)
+        self.assertEqual(len(items), 2)
 
         with open(self.test_filename) as filep:
             items = [item for item in _parse_file(filep) if item is not None]

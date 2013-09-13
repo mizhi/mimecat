@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name="mimecat",
-      version="0.1.0",
+      version="0.1.1",
       author="Mitchell Peabody",
       description=("A simple module for handling a catalogue of MIME types and"
                    " extensions"),

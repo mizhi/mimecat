@@ -29,20 +29,29 @@ class Catalogue(object):
 
     """
 
-    def __init__(self, filenames = None):
-        """Initializes this catalogue from the filename or filenames listed in
-        ``filenames``
+    def __init__(self, filenames = None, filep = None):
+        """Initializes this catalogue from the filename or filenames in ``filenames``
+        or from the file or files in ``filep``
 
-        If ``filenames`` is None, then a list of
-        common locations is tried to find ``mime.types`` when
-        one is found, the MIME type definitions are loaded and
-        the object is finished initializing.
+        If ``filenames`` and ``filep`` are None, then a list of common
+        locations is tried to find ``mime.types`` when one is found, the MIME
+        type definitions are loaded and the object is finished initializing. If
+        none of the filenames can be found, IOError will be raised.
 
-        If ``filenames`` is a list passed in as a parameter,
-        then _all_ the files listed will be loaded.
+        If ``filenames`` is a list, then _all_ the files listed will be
+        loaded. If ``filenames`` is a string, then the named file will be
+        loaded. If none of the files can be found, IOError will be raised.
+
+        If ``filep`` is not None, then that file-like object will be
+        read. Note: Files will *not* be closed after reading. It is the
+        caller's responsibility.
+
+        If both ``filenames`` and ``filep`` are specified, the ``filep``
+        is loaded first, followed by ``filenames``
 
         :param filenames: a filename or a list of filenames
           containing MIMEtype definitions in the style of mime.types
+        :param filep: a file-like object to read definitions from.
 
         :raises: IOError If unable to find any of the files.
 
@@ -55,12 +64,16 @@ class Catalogue(object):
 
         self.clear()
 
-        if filenames is None:
+        if filenames is None and filep is None:
             self.load_filenames(_KNOWNFILES, True)
-        elif isinstance(filenames, str):
-            self.load_filename(filenames)
         else:
-            self.load_filenames(filenames)
+            if filep is not None:
+                self.load_file(filep)
+
+            if filenames is not None:
+                if isinstance(filenames, (str, unicode)):
+                    filenames = [filenames]
+                self.load_filenames(filenames)
 
     def clear(self):
         """Clears out catalogue of known types.
