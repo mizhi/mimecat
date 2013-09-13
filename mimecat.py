@@ -30,8 +30,8 @@ class Catalogue(object):
     """
 
     def __init__(self, filenames = None, filep = None):
-        """Initializes this catalogue from the filename or filenames in ``filenames``
-        or from the file or files in ``filep``
+        """Initializes this catalogue from the filename or filenames in
+        ``filenames`` or from the file or files in ``filep``
 
         If ``filenames`` and ``filep`` are None, then a list of common
         locations is tried to find ``mime.types`` when one is found, the MIME
