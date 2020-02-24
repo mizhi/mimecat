@@ -1,10 +1,10 @@
 # -*_ coding: utf-8 -*-
 """mimecat - Easy catalogue of MIME types and extensions.
 """
-
 #
 # taken from mimetypes.py
 #
+from pathlib import Path
 _KNOWNFILES = [
     "/etc/mime.types",
     "/etc/httpd/mime.types",                    # Mac OS X
@@ -15,7 +15,9 @@ _KNOWNFILES = [
     "/usr/local/lib/netscape/mime.types",
     "/usr/local/etc/httpd/conf/mime.types",     # Apache 1.2
     "/usr/local/etc/mime.types",                # Apache 1.3
+    Path(__file__).parent/"mime.types",         # default
     ]
+
 
 class Catalogue(object):
     """A Catalogue object represents a list of known MIME types and
